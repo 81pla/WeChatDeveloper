@@ -21,18 +21,29 @@ try {
     $config = include "./config.php";
 
     // 3. 创建接口实例
-    // $wechat = \We::WeChatQrcode($config);
-    // $wechat = new \WeChat\Qrcode($config);
-    $wechat = \WeChat\Qrcode::instance($config);
+    // $wechat = new \WePay\Redpack($config);
+    // $wechat = \We::WePayRedpack($config);
+    $wechat = \WePay\Redpack::instance($config);
 
-    // 4. 获取用户列表
-    $result = $wechat->create('场景内容');
-    echo var_export($result, true) . PHP_EOL;
-
-    // 5. 创建二维码链接
-    $url = $wechat->url($result['ticket']);
-    echo var_export($url, true);
-
+    // 4. 组装参数，可以参考官方商户文档
+    $options = [
+        'mch_billno'   => time(),
+        're_openid'    => 'o38gps3vNdCqaggFfrBRCRikwlWY',
+        'send_name'    => '商户名称😍',
+        'act_name'     => '活动名称',
+        'total_amount' => '100',
+        'total_num'    => '1',
+        'wishing'      => '感谢您参加猜灯谜活动，祝您元宵节快乐！',
+        'remark'       => '猜越多得越多，快来抢！',
+        'client_ip'    => '127.0.0.1',
+    ];
+    // 发送红包记录
+    $result = $wechat->create($options);
+    echo '<pre>';
+    var_export($result);
+    // 查询红包记录
+    $result = $wechat->query($options['mch_billno']);
+    var_export($result);
 
 } catch (Exception $e) {
 
